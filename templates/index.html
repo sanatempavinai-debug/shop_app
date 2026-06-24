@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LaoShop — ຮ້ານຄ້າອອນລາຍ</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #F5390A;
+  --primary-dark: #C42D07;
+  --primary-light: #FFF0ED;
+  --orange: #FF6B35;
+  --yellow: #FFD700;
+  --yellow-light: #FFFBEA;
+  --blue: #0F3460;
+  --teal: #00B4D8;
+  --bg: #F5F5F5;
+  --card: #FFFFFF;
+  --text: #1A1A2E;
+  --muted: #717171;
+  --border: #E8E8E8;
+  --green: #00A650;
+  --radius: 10px;
+  --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  --shadow-hover: 0 8px 28px rgba(0,0,0,0.14);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans Lao','Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+.topbar{background:var(--primary-dark);color:#fff;font-size:11px;padding:5px 0;text-align:center;letter-spacing:.3px}
+
+header{background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.08);position:sticky;top:0;z-index:200}
+.header-inner{max-width:1280px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:16px}
+.logo{display:flex;align-items:center;gap:8px;text-decoration:none;flex-shrink:0}
+.logo-box{background:var(--primary);color:#fff;font-family:'Outfit',sans-serif;font-weight:800;font-size:20px;padding:6px 14px;border-radius:8px;letter-spacing:-0.5px}
+.search-wrap{flex:1;position:relative;max-width:600px}
+.search-wrap input{width:100%;padding:10px 50px 10px 16px;border:2px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;transition:.2s;background:#fafafa}
+.search-wrap input:focus{outline:none;border-color:var(--primary);background:#fff}
+.search-btn{position:absolute;right:0;top:0;height:100%;width:46px;background:var(--primary);border:none;border-radius:0 8px 8px 0;cursor:pointer;color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center}
+.header-actions{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.h-btn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;border:none;background:none;cursor:pointer;border-radius:8px;transition:.15s;position:relative}
+.h-btn:hover{background:var(--primary-light)}
+.h-btn-icon{font-size:22px;line-height:1}
+.h-btn-label{font-size:10px;color:var(--muted);font-family:'Outfit',sans-serif;font-weight:500}
+.cart-badge{position:absolute;top:2px;right:6px;background:var(--primary);color:#fff;font-size:10px;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif}
+
+.nav-bar{background:var(--primary);color:#fff}
+.nav-inner{max-width:1280px;margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:4px;overflow-x:auto}
+.nav-item{padding:10px 14px;font-size:13px;cursor:pointer;white-space:nowrap;opacity:.85;transition:.15s;border-bottom:2px solid transparent;font-weight:500}
+.nav-item:hover,.nav-item.active{opacity:1;border-bottom-color:#fff}
+
+.container{max-width:1280px;margin:0 auto;padding:16px 20px}
+
+.banner-section{display:grid;grid-template-columns:1fr 300px;gap:12px;margin-bottom:16px}
+.banner-main{border-radius:var(--radius);overflow:hidden;position:relative;background:linear-gradient(135deg,#1A1A2E 0%,#16213E 50%,#0F3460 100%);min-height:240px;display:flex;align-items:center;padding:30px 40px;cursor:pointer}
+.banner-main::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.banner-content{position:relative;z-index:1}
+.banner-tag{background:var(--primary);color:#fff;font-size:11px;font-weight:700;padding:4px 10px;border-radius:4px;display:inline-block;margin-bottom:10px;font-family:'Outfit',sans-serif;letter-spacing:.5px}
+.banner-title{font-size:32px;font-weight:800;color:#fff;line-height:1.15;margin-bottom:8px;font-family:'Outfit',sans-serif}
+.banner-title span{color:var(--yellow)}
+.banner-sub{font-size:14px;color:rgba(255,255,255,.7);margin-bottom:20px}
+.banner-cta{background:var(--primary);color:#fff;border:none;padding:10px 24px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.banner-cta:hover{background:var(--primary-dark)}
+.banner-deco{position:absolute;right:40px;top:50%;transform:translateY(-50%);font-size:100px;opacity:.15}
+.banner-side{display:flex;flex-direction:column;gap:12px}
+.banner-small{border-radius:var(--radius);overflow:hidden;flex:1;padding:20px;display:flex;flex-direction:column;justify-content:flex-end;cursor:pointer;position:relative;min-height:110px}
+.banner-small:nth-child(1){background:linear-gradient(135deg,#FF6B35,#F5390A)}
+.banner-small:nth-child(2){background:linear-gradient(135deg,#00B4D8,#0077B6)}
+.banner-small-title{font-size:16px;font-weight:700;color:#fff;font-family:'Outfit',sans-serif}
+.banner-small-sub{font-size:12px;color:rgba(255,255,255,.8)}
+.banner-small-deco{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:40px;opacity:.4}
+
+.section-card{background:var(--card);border-radius:var(--radius);padding:16px;margin-bottom:16px;box-shadow:var(--shadow)}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.section-title{display:flex;align-items:center;gap:10px}
+.section-title h2{font-size:18px;font-weight:700;font-family:'Outfit',sans-serif}
+.flash-badge{background:var(--primary);color:#fff;font-size:11px;font-weight:700;padding:3px 8px;border-radius:4px;font-family:'Outfit',sans-serif}
+.countdown{display:flex;gap:4px;align-items:center}
+.count-box{background:var(--text);color:#fff;font-family:'Outfit',sans-serif;font-weight:700;font-size:14px;padding:4px 8px;border-radius:4px;min-width:30px;text-align:center}
+.count-sep{font-weight:700;color:var(--text)}
+.see-all{font-size:13px;color:var(--primary);cursor:pointer;font-weight:600;display:flex;align-items:center;gap:4px;text-decoration:none}
+.see-all:hover{text-decoration:underline}
+
+.cat-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:8px}
+.cat-item{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;padding:12px 8px;border-radius:var(--radius);transition:.15s;text-decoration:none}
+.cat-item:hover{background:var(--primary-light)}
+.cat-icon{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;transition:.2s}
+.cat-item:hover .cat-icon{transform:scale(1.1)}
+.cat-name{font-size:12px;text-align:center;color:var(--text);font-weight:500;line-height:1.3}
+
+.product-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.product-card{background:var(--card);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:.2s;border:1px solid transparent;position:relative}
+.product-card:hover{border-color:var(--primary);box-shadow:var(--shadow-hover);transform:translateY(-3px)}
+.p-badge{position:absolute;top:8px;left:8px;z-index:1;background:var(--primary);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;font-family:'Outfit',sans-serif}
+.p-badge.new{background:var(--green)}
+.p-wishlist{position:absolute;top:8px;right:8px;z-index:1;width:28px;height:28px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.1);opacity:0;transition:.2s}
+.product-card:hover .p-wishlist{opacity:1}
+.p-img{height:180px;display:flex;align-items:center;justify-content:center;background:#fafafa;font-size:72px;position:relative;overflow:hidden}
+.p-img img{width:100%;height:100%;object-fit:cover}
+.p-body{padding:10px 12px 12px}
+.p-name{font-size:13px;color:var(--text);margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.4;height:36px}
+.p-price-row{display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap}
+.p-price{font-size:16px;font-weight:700;color:var(--primary);font-family:'Outfit',sans-serif}
+.p-original{font-size:12px;color:var(--muted);text-decoration:line-through;font-family:'Outfit',sans-serif}
+.p-meta{display:flex;align-items:center;justify-content:space-between}
+.p-sold{font-size:11px;color:var(--muted)}
+.p-stars{font-size:11px;color:#FFA500}
+.p-add{width:100%;padding:7px;background:var(--primary);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:8px;transition:.15s;opacity:0}
+.product-card:hover .p-add{opacity:1}
+
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;display:none;backdrop-filter:blur(2px)}
+.overlay.show{display:block}
+.cart-drawer{position:fixed;right:0;top:0;height:100%;width:420px;max-width:100vw;background:#fff;z-index:301;transform:translateX(110%);transition:.35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:-8px 0 40px rgba(0,0,0,.15)}
+.cart-drawer.open{transform:translateX(0)}
+.cart-head{background:var(--primary);color:#fff;padding:16px 20px;display:flex;justify-content:space-between;align-items:center}
+.cart-head h2{font-size:16px;font-weight:700;font-family:'Outfit',sans-serif}
+.close-btn{background:rgba(255,255,255,.2);border:none;color:#fff;width:30px;height:30px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s}
+.close-btn:hover{background:rgba(255,255,255,.35)}
+.cart-body{flex:1;overflow-y:auto;padding:16px}
+.cart-empty{text-align:center;padding:50px 20px;color:var(--muted)}
+.cart-empty-icon{font-size:60px;margin-bottom:12px}
+.cart-item{display:flex;gap:10px;padding:12px 0;border-bottom:1px solid var(--border)}
+.ci-img{width:70px;height:70px;border-radius:8px;background:#fafafa;display:flex;align-items:center;justify-content:center;font-size:36px;flex-shrink:0;overflow:hidden;border:1px solid var(--border)}
+.ci-img img{width:100%;height:100%;object-fit:cover}
+.ci-info{flex:1;min-width:0}
+.ci-name{font-size:13px;font-weight:500;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.4}
+.ci-price{font-size:14px;font-weight:700;color:var(--primary);font-family:'Outfit',sans-serif;margin-bottom:6px}
+.ci-qty{display:flex;align-items:center;gap:8px}
+.qb{width:26px;height:26px;border:1.5px solid var(--border);border-radius:6px;background:#fff;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:.15s;font-weight:600}
+.qb:hover{border-color:var(--primary);color:var(--primary)}
+.qn{font-size:13px;font-weight:700;min-width:22px;text-align:center;font-family:'Outfit',sans-serif}
+.ci-del{background:none;border:none;cursor:pointer;color:#ddd;font-size:20px;transition:.15s;padding:4px}
+.ci-del:hover{color:var(--primary)}
+.cart-footer{padding:16px;border-top:2px solid var(--border);background:#fafafa}
+.total-row{display:flex;justify-content:space-between;font-size:16px;font-weight:700;margin-bottom:14px;color:var(--text)}
+.total-amount{color:var(--primary);font-family:'Outfit',sans-serif;font-size:20px}
+.form-group{margin-bottom:10px}
+.form-group label{display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.form-group input,.form-group textarea{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;transition:.2s}
+.form-group input:focus,.form-group textarea:focus{outline:none;border-color:var(--primary)}
+.checkout-btn{display:block;width:100%;padding:13px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s;margin-top:14px}
+.checkout-btn:hover{background:var(--primary-dark)}
+
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:400;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.modal-bg.show{display:flex}
+.modal{background:#fff;border-radius:16px;max-width:420px;width:100%;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal-header{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;padding:20px 24px;text-align:center}
+.modal-header h2{font-size:20px;font-weight:700;font-family:'Outfit',sans-serif;margin-bottom:4px}
+.modal-header .order-code{font-size:13px;opacity:.85}
+.modal-body{padding:24px}
+.pay-amount{text-align:center;font-size:32px;font-weight:800;color:var(--primary);font-family:'Outfit',sans-serif;margin-bottom:20px}
+.pay-amount span{font-size:16px;font-weight:500;color:var(--muted)}
+.qr-container{display:flex;flex-direction:column;align-items:center;background:#fafafa;border:2px dashed var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
+.qr-container img{width:180px;height:180px;object-fit:contain;border-radius:8px}
+.qr-placeholder{width:180px;height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--muted);font-size:13px;text-align:center;gap:8px}
+.qr-hint{font-size:12px;color:var(--muted);margin-top:8px;text-align:center}
+.slip-upload{border:1.5px dashed var(--border);border-radius:10px;padding:14px;cursor:pointer;transition:.2s;text-align:center;margin-bottom:14px}
+.slip-upload:hover{border-color:var(--primary);background:var(--primary-light)}
+.slip-upload p{font-size:12px;color:var(--muted);margin-top:4px}
+.confirm-btn{width:100%;padding:13px;background:var(--green);color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.confirm-btn:hover{background:#008a42}
+.cancel-btn{width:100%;padding:10px;background:none;border:1.5px solid var(--border);border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit;margin-top:8px;transition:.15s}
+.cancel-btn:hover{border-color:var(--muted)}
+.success-body{padding:40px 24px;text-align:center}
+.success-icon{font-size:70px;margin-bottom:16px}
+.success-body h2{font-size:22px;font-weight:700;color:var(--green);font-family:'Outfit',sans-serif;margin-bottom:8px}
+.success-body p{font-size:14px;color:var(--muted);margin-bottom:24px;line-height:1.6}
+.back-btn{padding:12px 28px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:#1A1A2E;color:#fff;padding:12px 22px;border-radius:30px;font-size:13px;z-index:999;opacity:0;transition:.3s;pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.3)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+footer{background:var(--text);color:rgba(255,255,255,.6);padding:30px 20px;margin-top:30px;text-align:center;font-size:13px}
+footer strong{color:#fff}
+
+.promo-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.promo-item{background:var(--card);border-radius:var(--radius);padding:14px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow)}
+.promo-icon{font-size:28px;flex-shrink:0}
+.promo-title{font-size:13px;font-weight:700;color:var(--text)}
+.promo-sub{font-size:11px;color:var(--muted)}
+
+@media(max-width:1024px){.product-grid{grid-template-columns:repeat(3,1fr)}.cat-grid{grid-template-columns:repeat(4,1fr)}.banner-section{grid-template-columns:1fr}.banner-side{flex-direction:row}.promo-strip{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.product-grid{grid-template-columns:repeat(2,1fr)}.cat-grid{grid-template-columns:repeat(4,1fr)}.cart-drawer{width:100%}.banner-main{min-height:180px;padding:20px}.banner-title{font-size:22px}.header-inner{gap:8px}}
+</style>
+</head>
+<body>
+
+<div class="topbar">🎉 ໂປຣໂມຊັ່ນພິເສດ — ສ່ົງຟຣີທົ່ວປະເທດ ສຳລັບຄຳສັ່ງ 200,000 ກີບຂຶ້ນໄປ!</div>
+
+<header>
+  <div class="header-inner">
+    <a class="logo" href="#">
+      <div class="logo-box">LAO<span style="color:var(--yellow)">SHOP</span></div>
+    </a>
+    <div class="search-wrap">
+      <input type="text" id="search" placeholder="🔍 ຄົ້ນຫາສິນຄ້າ, ຍີ່ຫໍ້, ໝວດໝູ່..." oninput="debounceSearch()">
+      <button class="search-btn">🔍</button>
+    </div>
+    <div class="header-actions">
+      <button class="h-btn" onclick="openCart()">
+        <span class="h-btn-icon">🛒</span>
+        <span class="h-btn-label">ກະຕ່າ</span>
+        <span class="cart-badge" id="cart-count">0</span>
+      </button>
+      <button class="h-btn">
+        <span class="h-btn-icon">👤</span>
+        <span class="h-btn-label">ບັນຊີ</span>
+      </button>
+    </div>
+  </div>
+  <div class="nav-bar">
+    <div class="nav-inner" id="nav-inner">
+      <div class="nav-item active" onclick="selectCat('ທັງໝົດ',this)">🏠 ທັງໝົດ</div>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <div class="banner-section">
+    <div class="banner-main">
+      <div class="banner-content">
+        <div class="banner-tag">⚡ FLASH SALE</div>
+        <div class="banner-title">ສິນຄ້າລາວ<br><span>ຄຸນນະພາບດີ</span></div>
+        <div class="banner-sub">ສ່ົງໄວ ຈ່າຍງ່າຍ ຜ່ານ QR</div>
+        <button class="banner-cta" onclick="document.getElementById('prod-section').scrollIntoView({behavior:'smooth'})">ຊື້ດຽວນີ້ →</button>
+      </div>
+      <div class="banner-deco">🛍</div>
+    </div>
+    <div class="banner-side">
+      <div class="banner-small">
+        <div class="banner-small-deco">🎁</div>
+        <div class="banner-small-title">ຂອງຝາກ</div>
+        <div class="banner-small-sub">ສິນຄ້າພິເສດ</div>
+      </div>
+      <div class="banner-small">
+        <div class="banner-small-deco">🚀</div>
+        <div class="banner-small-title">ສ່ົງດ່ວນ</div>
+        <div class="banner-small-sub">ພາຍໃນ 24 ຊົ່ວໂມງ</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="promo-strip">
+    <div class="promo-item"><div class="promo-icon">🚚</div><div><div class="promo-title">ສ່ົງຟຣີ</div><div class="promo-sub">ຄຳສັ່ງ 200K+ ກີບ</div></div></div>
+    <div class="promo-item"><div class="promo-icon">📱</div><div><div class="promo-title">ຈ່າຍຜ່ານ QR</div><div class="promo-sub">BCEL, JDB, LDB</div></div></div>
+    <div class="promo-item"><div class="promo-icon">🔄</div><div><div class="promo-title">ຄືນສິນຄ້າໄດ້</div><div class="promo-sub">ພາຍໃນ 7 ວັນ</div></div></div>
+    <div class="promo-item"><div class="promo-icon">🔒</div><div><div class="promo-title">ປອດໄພ 100%</div><div class="promo-sub">ຮັບປະກັນທຸກຄຳສັ່ງ</div></div></div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-head">
+      <div class="section-title"><h2>🏷 ໝວດໝູ່ສິນຄ້າ</h2></div>
+    </div>
+    <div class="cat-grid" id="cat-grid">
+      <div style="text-align:center;padding:20px;color:var(--muted);grid-column:1/-1">ໂຫລດ...</div>
+    </div>
+  </div>
+
+  <div class="section-card" id="prod-section">
+    <div class="section-head">
+      <div class="section-title">
+        <h2>⚡ Flash Sale</h2>
+        <span class="flash-badge">ລາຄາພິເສດ</span>
+        <div class="countdown">
+          <div class="count-box" id="ch">00</div><span class="count-sep">:</span>
+          <div class="count-box" id="cm">00</div><span class="count-sep">:</span>
+          <div class="count-box" id="cs">00</div>
+        </div>
+      </div>
+      <a class="see-all" onclick="selectCat('ທັງໝົດ')">ເບິ່ງທັງໝົດ ›</a>
+    </div>
+    <div class="product-grid" id="product-grid">
+      <div style="text-align:center;padding:40px;color:var(--muted);grid-column:1/-1">ກຳລັງໂຫລດ...</div>
+    </div>
+  </div>
+</div>
+
+<footer><strong>LAOSHOP</strong> — ຮ້ານຄ້າອອນລາຍ ສິນຄ້າລາວ ✦ ສ່ົງທົ່ວປະເທດ</footer>
+
+<!-- CART -->
+<div class="overlay" id="overlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cart-drawer">
+  <div class="cart-head">
+    <h2>🛒 ກະຕ່າສິນຄ້າ (<span id="cart-count-d">0</span>)</h2>
+    <button class="close-btn" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-body" id="cart-body"></div>
+  <div class="cart-footer" id="cart-footer" style="display:none">
+    <div class="total-row"><span>ລວມທັງໝົດ</span><span class="total-amount" id="cart-total">0</span></div>
+    <div class="form-group"><label>ຊື່ລູກຄ້າ *</label><input id="cust-name" type="text" placeholder="ຊື່-ນາມສະກຸນ"></div>
+    <div class="form-group"><label>ເບີໂທ</label><input id="cust-phone" type="text" placeholder="020-XXXXXXXX"></div>
+    <div class="form-group"><label>ທີ່ຢູ່ຈັດສົ່ງ</label><textarea id="cust-address" rows="2" placeholder="ບ້ານ, ເມືອງ, ແຂວງ..."></textarea></div>
+    <button class="checkout-btn" onclick="placeOrder()">💳 ສັ່ງຊື້ ແລະ ຊຳລະເງິນ</button>
+  </div>
+</div>
+
+<!-- PAY MODAL -->
+<div class="modal-bg" id="pay-modal"><div class="modal" id="pay-modal-content"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const API='';
+let products=[],categories=[],cart={},selectedCat='ທັງໝົດ',searchTimer,qrPath=null;
+const CAT_COLORS=['#FF6B35','#00B4D8','#8338EC','#06D6A0','#FFB703','#E63946','#457B9D','#2DC653'];
+const CAT_EMOJIS={'ເຄື່ອງດື່ມ':'☕','ຂອງຝາກ':'🎁','ເຄື່ອງນຸ່ງ':'👗','ສິນຄ້າທົ່ວໄປ':'🛍','ອາຫານ':'🍜','ເຄື່ອງໃຊ້':'🏠','ເຄື່ອງສຳອາງ':'💄','ອື່ນໆ':'📦'};
+
+(function countdown(){
+  const end=new Date();end.setHours(23,59,59,0);
+  setInterval(()=>{
+    const d=end-new Date();if(d<0)return;
+    document.getElementById('ch').textContent=String(Math.floor(d/3600000)).padStart(2,'0');
+    document.getElementById('cm').textContent=String(Math.floor((d%3600000)/60000)).padStart(2,'0');
+    document.getElementById('cs').textContent=String(Math.floor((d%60000)/1000)).padStart(2,'0');
+  },1000);
+})();
+
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+
+async function init(){
+  try{const r=await fetch(`${API}/api/settings`);const s=await r.json();document.title=s.shop_name;qrPath=s.qr_image_path;}catch(e){}
+  const cr=await fetch(`${API}/api/categories`);categories=await cr.json();
+  renderNavCats();renderCatGrid();
+  await loadProducts();
+}
+
+function renderNavCats(){
+  const nav=document.getElementById('nav-inner');
+  nav.innerHTML=`<div class="nav-item active" onclick="selectCat('ທັງໝົດ',this)">🏠 ທັງໝົດ</div>`
+    +categories.map(c=>`<div class="nav-item" onclick="selectCat('${c.name}',this)">${CAT_EMOJIS[c.name]||'📦'} ${c.name}</div>`).join('');
+}
+
+function renderCatGrid(){
+  const g=document.getElementById('cat-grid');
+  const all=[{name:'ທັງໝົດ',emoji:'🏠'},...categories.map(c=>({name:c.name,emoji:CAT_EMOJIS[c.name]||'📦'}))];
+  g.innerHTML=all.map((c,i)=>`
+    <div class="cat-item" onclick="selectCat('${c.name}')">
+      <div class="cat-icon" style="background:${CAT_COLORS[i%CAT_COLORS.length]}22">${c.emoji}</div>
+      <div class="cat-name">${c.name}</div>
+    </div>`).join('');
+}
+
+function selectCat(name,el){
+  selectedCat=name;
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if(el)el.classList.add('active');
+  loadProducts();
+  document.getElementById('prod-section').scrollIntoView({behavior:'smooth'});
+}
+
+async function loadProducts(){
+  let url=`${API}/api/products?active_only=true`;
+  const q=document.getElementById('search').value.trim();
+  if(selectedCat!=='ທັງໝົດ'){const c=categories.find(x=>x.name===selectedCat);if(c)url+=`&category_id=${c.id}`;}
+  if(q)url+=`&search=${encodeURIComponent(q)}`;
+  const r=await fetch(url);products=await r.json();renderProducts();
+}
+
+function debounceSearch(){clearTimeout(searchTimer);searchTimer=setTimeout(loadProducts,400);}
+
+function renderProducts(){
+  const g=document.getElementById('product-grid');
+  if(!products.length){g.innerHTML='<div style="text-align:center;padding:50px;color:var(--muted);grid-column:1/-1;font-size:15px">😔 ບໍ່ພົບສິນຄ້າ</div>';return;}
+  const discs=[15,20,25,30,10];
+  g.innerHTML=products.map((p,i)=>{
+    const d=discs[i%discs.length];
+    const orig=Math.floor(Number(p.price)*(1+d/100)/1000)*1000;
+    const isNew=i<2;
+    return `<div class="product-card">
+      <div class="${isNew?'p-badge new':'p-badge'}">${isNew?'NEW':'-'+d+'%'}</div>
+      <div class="p-wishlist" onclick="event.stopPropagation();toast('❤ ເພີ່ມໃນລາຍການທີ່ຖືກໃຈ')">❤</div>
+      <div class="p-img">${p.image_path?`<img src="${p.image_path}" alt="${p.name}">`:p.emoji||'📦'}</div>
+      <div class="p-body">
+        <div class="p-name">${p.name}</div>
+        <div class="p-price-row">
+          <div class="p-price">${Number(p.price).toLocaleString()} ກີບ</div>
+          <div class="p-original">${orig.toLocaleString()}</div>
+        </div>
+        <div class="p-meta">
+          <div class="p-sold">ຂາຍ ${Math.floor(Math.random()*500)+50} ຊິ້ນ</div>
+          <div class="p-stars">★★★★☆</div>
+        </div>
+        <button class="p-add" onclick="event.stopPropagation();addToCart(${p.id})">+ ໃສ່ກະຕ່າ</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function addToCart(id){
+  const p=products.find(x=>x.id===id);if(!p)return;
+  if((cart[id]||0)>=p.stock){toast('⚠ ສາງບໍ່ພໍ');return;}
+  cart[id]=(cart[id]||0)+1;updateCount();
+  toast(`✓ ເພີ່ມ ${p.name} ໃສ່ກະຕ່າ`);
+}
+function changeQty(id,d){cart[id]=(cart[id]||0)+d;if(cart[id]<=0)delete cart[id];updateCount();renderCart();}
+function removeItem(id){delete cart[id];updateCount();renderCart();}
+function updateCount(){
+  const t=Object.values(cart).reduce((a,b)=>a+b,0);
+  document.getElementById('cart-count').textContent=t;
+  document.getElementById('cart-count-d').textContent=t;
+}
+function openCart(){document.getElementById('cart-drawer').classList.add('open');document.getElementById('overlay').classList.add('show');renderCart();}
+function closeCart(){document.getElementById('cart-drawer').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
+
+function renderCart(){
+  const body=document.getElementById('cart-body'),footer=document.getElementById('cart-footer');
+  const items=Object.entries(cart).filter(([,q])=>q>0);
+  if(!items.length){body.innerHTML=`<div class="cart-empty"><div class="cart-empty-icon">🛒</div><p style="font-weight:600;margin-bottom:6px">ກະຕ່າຍັງຫວ່າງ</p><p style="font-size:13px">ເພີ່ມສິນຄ້າທີ່ທ່ານຕ້ອງການ</p></div>`;footer.style.display='none';return;}
+  let total=0;
+  body.innerHTML=items.map(([id,qty])=>{
+    const p=products.find(x=>x.id==id);if(!p)return'';
+    const sub=p.price*qty;total+=sub;
+    return `<div class="cart-item">
+      <div class="ci-img">${p.image_path?`<img src="${p.image_path}">`:p.emoji||'📦'}</div>
+      <div class="ci-info">
+        <div class="ci-name">${p.name}</div>
+        <div class="ci-price">${Number(p.price).toLocaleString()} ກີບ</div>
+        <div class="ci-qty">
+          <button class="qb" onclick="changeQty(${id},-1)">−</button>
+          <span class="qn">${qty}</span>
+          <button class="qb" onclick="changeQty(${id},1)">+</button>
+          <button class="ci-del" onclick="removeItem(${id})">🗑</button>
+        </div>
+      </div>
+      <div style="font-size:14px;font-weight:700;color:var(--primary);flex-shrink:0">${Number(sub).toLocaleString()}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('cart-total').textContent=Number(total).toLocaleString()+' ກີບ';
+  footer.style.display='block';
+}
+
+async function placeOrder(){
+  const name=document.getElementById('cust-name').value.trim();
+  if(!name){toast('⚠ ກາລຸນາໃສ່ຊື່');return;}
+  const items=Object.entries(cart).filter(([,q])=>q>0).map(([id,qty])=>({product_id:parseInt(id),quantity:qty}));
+  if(!items.length){toast('⚠ ບໍ່ມີສິນຄ້າ');return;}
+  try{
+    const r=await fetch(`${API}/api/orders`,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({customer_name:name,customer_phone:document.getElementById('cust-phone').value||null,customer_address:document.getElementById('cust-address').value||null,items})});
+    const d=await r.json();if(!r.ok)throw new Error(d.detail||'ຜິດພາດ');
+    closeCart();cart={};updateCount();showPayModal(d);
+  }catch(e){toast('❌ '+e.message);}
+}
+
+async function showPayModal(order){
+  // ດຶງ QR ໃໝ່ທຸກຄັ້ງ ເພື່ອໃຫ້ໄດ້ຂໍ້ມູນລ່າສຸດ
+  try{
+    const rs=await fetch(`${API}/api/settings`);
+    const ss=await rs.json();
+    qrPath=ss.qr_image_path||null;
+  }catch(e){}
+
+  const qrHTML = qrPath
+    ? `<img src="${qrPath}" alt="QR Payment" style="width:180px;height:180px;object-fit:contain;border-radius:8px" onerror="this.style.display='none';document.getElementById('qr-err').style.display='flex'">`
+    : ``;
+  const qrFallback = `<div id="qr-err" style="width:180px;height:180px;display:${qrPath?'none':'flex'};flex-direction:column;align-items:center;justify-content:center;color:var(--muted);font-size:13px;text-align:center;gap:8px"><div style="font-size:44px">📲</div><div>ຕິດຕໍ່ Admin ເພື່ອອັບໂຫລດ QR</div></div>`;
+
+  document.getElementById('pay-modal-content').innerHTML=`
+    <div class="modal-header"><h2>💳 ຊຳລະເງິນ</h2><div class="order-code">ຄຳສັ່ງ: ${order.order_code}</div></div>
+    <div class="modal-body">
+      <div class="pay-amount">${Number(order.total).toLocaleString()} <span>ກີບ</span></div>
+      <div class="qr-container">
+        ${qrHTML}${qrFallback}
+        <div class="qr-hint">📱 ສະແກນ QR ແລ້ວໂອນ <strong style="color:var(--primary)">${Number(order.total).toLocaleString()} ກີບ</strong></div>
+      </div>
+      <label class="slip-upload">
+        <div style="font-size:26px">📸</div>
+        <p>ອັບໂຫລດສະລິບໂອນ (ຖ້ຳຕ້ອງການ)</p>
+        <input type="file" accept="image/*" style="display:none" onchange="previewSlip(this)">
+        <div id="slip-preview"></div>
+      </label>
+      <button class="confirm-btn" onclick="confirmPay(${order.order_id})">✅ ຢືນຢັນຄຳສັ່ງ</button>
+      <button class="cancel-btn" onclick="closeModal()">ຈ່າຍທີຫຼັງ</button>
+    </div>`;
+  document.getElementById('pay-modal').classList.add('show');
+}
+
+function previewSlip(inp){
+  if(!inp.files[0])return;
+  document.getElementById('slip-preview').innerHTML=`<img src="${URL.createObjectURL(inp.files[0])}" style="height:75px;border-radius:8px;margin-top:8px;border:1px solid var(--border)">`;
+  window._slip=inp.files[0];
+}
+
+async function confirmPay(orderId){
+  if(window._slip){const fd=new FormData();fd.append('file',window._slip);await fetch(`${API}/api/orders/${orderId}/slip`,{method:'POST',body:fd});}
+  document.getElementById('pay-modal-content').innerHTML=`
+    <div class="success-body">
+      <div class="success-icon">🎉</div>
+      <h2>ສ່ົງຄຳສັ່ງສຳເລັດ!</h2>
+      <p>ຂໍຂອບໃຈທີ່ໃຊ້ບໍລິການ LAOSHOP<br>ທາງຮ້ານຈະກວດສອບ ແລະ ດຳເນີນການໂດຍໄວ</p>
+      <button class="back-btn" onclick="closeModal();loadProducts()">🛍 ຊື້ສິນຄ້າຕໍ່</button>
+    </div>`;
+  window._slip=null;loadProducts();
+}
+
+function closeModal(){document.getElementById('pay-modal').classList.remove('show');window._slip=null;}
+init();
+</script>
+</body>
+</html>
