@@ -52,19 +52,36 @@ header{background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.08);position:sticky;top:
 
 .container{max-width:1280px;margin:0 auto;padding:16px 20px}
 
+/* ===== SLIDER ===== */
 .banner-section{display:grid;grid-template-columns:1fr 300px;gap:12px;margin-bottom:16px}
-.banner-main{border-radius:var(--radius);overflow:hidden;position:relative;background:linear-gradient(135deg,#1A1A2E 0%,#16213E 50%,#0F3460 100%);min-height:240px;display:flex;align-items:center;padding:30px 40px;cursor:pointer}
-.banner-main::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
-.banner-content{position:relative;z-index:1}
+.slider-wrap{border-radius:var(--radius);overflow:hidden;position:relative;min-height:240px;cursor:pointer}
+.slider-track{display:flex;transition:transform .6s cubic-bezier(.4,0,.2,1);height:100%}
+.slide{min-width:100%;height:240px;display:flex;align-items:center;padding:30px 40px;position:relative;overflow:hidden;flex-shrink:0}
+.slide::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23fff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.slide-1{background:linear-gradient(135deg,#1A1A2E 0%,#16213E 50%,#0F3460 100%)}
+.slide-2{background:linear-gradient(135deg,#0F3460 0%,#533483 100%)}
+.slide-3{background:linear-gradient(135deg,#1B4332 0%,#2D6A4F 100%)}
+.slide-4{background:linear-gradient(135deg,#7B2D00 0%,#C42D07 100%)}
+.slide-content{position:relative;z-index:2}
+.slide-deco{position:absolute;right:40px;top:50%;transform:translateY(-50%);font-size:110px;opacity:.15;z-index:1;transition:.6s}
 .banner-tag{background:var(--primary);color:#fff;font-size:11px;font-weight:700;padding:4px 10px;border-radius:4px;display:inline-block;margin-bottom:10px;font-family:'Outfit',sans-serif;letter-spacing:.5px}
 .banner-title{font-size:32px;font-weight:800;color:#fff;line-height:1.15;margin-bottom:8px;font-family:'Outfit',sans-serif}
 .banner-title span{color:var(--yellow)}
 .banner-sub{font-size:14px;color:rgba(255,255,255,.7);margin-bottom:20px}
 .banner-cta{background:var(--primary);color:#fff;border:none;padding:10px 24px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
-.banner-cta:hover{background:var(--primary-dark)}
-.banner-deco{position:absolute;right:40px;top:50%;transform:translateY(-50%);font-size:100px;opacity:.15}
+.banner-cta:hover{background:var(--primary-dark);transform:translateY(-1px)}
+/* Slider controls */
+.slider-btn{position:absolute;top:50%;transform:translateY(-50%);z-index:10;width:36px;height:36px;background:rgba(255,255,255,.2);border:none;border-radius:50%;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;backdrop-filter:blur(4px)}
+.slider-btn:hover{background:rgba(255,255,255,.4)}
+.slider-prev{left:12px}
+.slider-next{right:12px}
+.slider-dots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:10}
+.dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.4);cursor:pointer;transition:.3s;border:none}
+.dot.active{background:#fff;width:22px;border-radius:4px}
+/* Banner side */
 .banner-side{display:flex;flex-direction:column;gap:12px}
-.banner-small{border-radius:var(--radius);overflow:hidden;flex:1;padding:20px;display:flex;flex-direction:column;justify-content:flex-end;cursor:pointer;position:relative;min-height:110px}
+.banner-small{border-radius:var(--radius);overflow:hidden;flex:1;padding:20px;display:flex;flex-direction:column;justify-content:flex-end;cursor:pointer;position:relative;min-height:110px;transition:.2s}
+.banner-small:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover)}
 .banner-small:nth-child(1){background:linear-gradient(135deg,#FF6B35,#F5390A)}
 .banner-small:nth-child(2){background:linear-gradient(135deg,#00B4D8,#0077B6)}
 .banner-small-title{font-size:16px;font-weight:700;color:#fff;font-family:'Outfit',sans-serif}
@@ -218,15 +235,62 @@ footer strong{color:#fff}
 
 <div class="container">
   <div class="banner-section">
-    <div class="banner-main">
-      <div class="banner-content">
-        <div class="banner-tag">⚡ FLASH SALE</div>
-        <div class="banner-title">ສິນຄ້າລາວ<br><span>ຄຸນນະພາບດີ</span></div>
-        <div class="banner-sub">ສ່ົງໄວ ຈ່າຍງ່າຍ ຜ່ານ QR</div>
-        <button class="banner-cta" onclick="document.getElementById('prod-section').scrollIntoView({behavior:'smooth'})">ຊື້ດຽວນີ້ →</button>
+    <!-- SLIDER -->
+    <div class="slider-wrap" id="slider-wrap">
+      <div class="slider-track" id="slider-track">
+
+        <div class="slide slide-1">
+          <div class="slide-content">
+            <div class="banner-tag">⚡ FLASH SALE</div>
+            <div class="banner-title">ສິນຄ້າລາວ<br><span>ຄຸນນະພາບດີ</span></div>
+            <div class="banner-sub">ສ່ົງໄວ ຈ່າຍງ່າຍ ຜ່ານ QR Code</div>
+            <button class="banner-cta" onclick="document.getElementById('prod-section').scrollIntoView({behavior:'smooth'})">ຊື້ດຽວນີ້ →</button>
+          </div>
+          <div class="slide-deco">🛍</div>
+        </div>
+
+        <div class="slide slide-2">
+          <div class="slide-content">
+            <div class="banner-tag" style="background:#FFD700;color:#1A1A2E">🎁 ຂອງຝາກ</div>
+            <div class="banner-title">ຂອງຝາກລາວ<br><span>ຄົບຄ່ານຳໃຈ</span></div>
+            <div class="banner-sub">ສິນຄ້າຄຸນນະພາບ ສ່ວນລົດລາຄາສູງສຸດ 30%</div>
+            <button class="banner-cta" style="background:#FFD700;color:#1A1A2E" onclick="document.getElementById('prod-section').scrollIntoView({behavior:'smooth'})">ເບິ່ງສິນຄ້າ →</button>
+          </div>
+          <div class="slide-deco">🎁</div>
+        </div>
+
+        <div class="slide slide-3">
+          <div class="slide-content">
+            <div class="banner-tag" style="background:#52B788">🚚 ສ່ົງຟຣີ</div>
+            <div class="banner-title">ສ່ົງຟຣີ<br><span>ທົ່ວປະເທດ</span></div>
+            <div class="banner-sub">ຄຳສັ່ງ 200,000 ກີບຂຶ້ນໄປ ສ່ົງຟຣີທຸກທີ່</div>
+            <button class="banner-cta" style="background:#52B788" onclick="document.getElementById('prod-section').scrollIntoView({behavior:'smooth'})">ສັ່ງດຽວນີ້ →</button>
+          </div>
+          <div class="slide-deco">🚚</div>
+        </div>
+
+        <div class="slide slide-4">
+          <div class="slide-content">
+            <div class="banner-tag">📱 QR Payment</div>
+            <div class="banner-title">ຈ່າຍງ່າຍ<br><span>ຜ່ານ QR</span></div>
+            <div class="banner-sub">ຮອງຮັບ BCEL One · JDB · LDB · PromptPay</div>
+            <button class="banner-cta" onclick="document.getElementById('prod-section').scrollIntoView({behavior:'smooth'})">ຊື້ເລີຍ →</button>
+          </div>
+          <div class="slide-deco">📱</div>
+        </div>
+
       </div>
-      <div class="banner-deco">🛍</div>
+      <!-- Controls -->
+      <button class="slider-btn slider-prev" onclick="slideMove(-1)">‹</button>
+      <button class="slider-btn slider-next" onclick="slideMove(1)">›</button>
+      <div class="slider-dots" id="slider-dots">
+        <button class="dot active" onclick="slideTo(0)"></button>
+        <button class="dot" onclick="slideTo(1)"></button>
+        <button class="dot" onclick="slideTo(2)"></button>
+        <button class="dot" onclick="slideTo(3)"></button>
+      </div>
     </div>
+
     <div class="banner-side">
       <div class="banner-small">
         <div class="banner-small-deco">🎁</div>
@@ -494,6 +558,35 @@ async function confirmPay(orderId){
 }
 
 function closeModal(){document.getElementById('pay-modal').classList.remove('show');window._slip=null;}
+// ===== SLIDER =====
+let slideIdx = 0;
+const TOTAL_SLIDES = 4;
+
+function slideTo(n) {
+  slideIdx = (n + TOTAL_SLIDES) % TOTAL_SLIDES;
+  document.getElementById('slider-track').style.transform = `translateX(-${slideIdx * 100}%)`;
+  document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === slideIdx));
+}
+function slideMove(dir) { slideTo(slideIdx + dir); }
+
+// Auto-play every 4s
+let sliderTimer = setInterval(() => slideMove(1), 4000);
+document.getElementById('slider-wrap').addEventListener('mouseenter', () => clearInterval(sliderTimer));
+document.getElementById('slider-wrap').addEventListener('mouseleave', () => {
+  sliderTimer = setInterval(() => slideMove(1), 4000);
+});
+
+// Touch/swipe support
+(function(){
+  const el = document.getElementById('slider-wrap');
+  let startX = 0;
+  el.addEventListener('touchstart', e => startX = e.touches[0].clientX, {passive:true});
+  el.addEventListener('touchend', e => {
+    const diff = startX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 40) slideMove(diff > 0 ? 1 : -1);
+  }, {passive:true});
+})();
+
 init();
 </script>
 </body>
