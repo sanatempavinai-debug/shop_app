@@ -102,8 +102,10 @@ header{background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.08);position:sticky;top:
 .cat-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:8px}
 .cat-item{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;padding:12px 8px;border-radius:var(--radius);transition:.15s;text-decoration:none}
 .cat-item:hover{background:var(--primary-light)}
-.cat-icon{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;transition:.2s}
-.cat-item:hover .cat-icon{transform:scale(1.1)}
+.cat-icon{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;transition:.2s;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.cat-icon svg{width:26px;height:26px;stroke:currentColor}
+.cat-item:hover .cat-icon{transform:scale(1.12);box-shadow:0 4px 16px rgba(0,0,0,.12)}
+.cat-item.active .cat-icon,.cat-item:hover .cat-name{color:var(--primary)}
 .cat-name{font-size:12px;text-align:center;color:var(--text);font-weight:500;line-height:1.3}
 
 .product-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
@@ -366,8 +368,20 @@ footer strong{color:#fff}
 <script>
 const API='';
 let products=[],categories=[],cart={},selectedCat='ທັງໝົດ',searchTimer,qrPath=null;
-const CAT_COLORS=['#FF6B35','#00B4D8','#8338EC','#06D6A0','#FFB703','#E63946','#457B9D','#2DC653'];
-const CAT_EMOJIS={'ເຄື່ອງດື່ມ':'☕','ຂອງຝາກ':'🎁','ເຄື່ອງນຸ່ງ':'👗','ສິນຄ້າທົ່ວໄປ':'🛍','ອາຫານ':'🍜','ເຄື່ອງໃຊ້':'🏠','ເຄື່ອງສຳອາງ':'💄','ອື່ນໆ':'📦'};
+const CAT_CONFIG = {
+  'ທັງໝົດ':     { bg:'#FFF0ED', color:'#F5390A', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>' },
+  'ເຄື່ອງດື່ມ':  { bg:'#FFF5E5', color:'#F59E0B', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>' },
+  'ຂອງຝາກ':     { bg:'#FFF0F6', color:'#EC4899', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="20,12 20,22 4,22 4,12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>' },
+  'ເຄື່ອງນຸ່ງ':  { bg:'#F0F4FF', color:'#6366F1', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.57a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.57a2 2 0 00-1.34-2.23z"/></svg>' },
+  'ສິນຄ້າທົ່ວໄປ':{ bg:'#F0FDF4', color:'#22C55E', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>' },
+  'ອາຫານ':       { bg:'#FFF7ED', color:'#EA580C', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 00-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg>' },
+  'IT':           { bg:'#EFF6FF', color:'#3B82F6', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>' },
+  'Sports':       { bg:'#F0FDF4', color:'#16A34A', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M4.93 4.93l4.24 4.24M14.83 14.83l4.24 4.24M14.83 9.17l4.24-4.24M14.83 9.17l3.53 3.53M4.93 19.07l4.24-4.24"/></svg>' },
+  'ເຄື່ອງໃຊ້':  { bg:'#F5F3FF', color:'#8B5CF6', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>' },
+  'ເຄື່ອງສຳອາງ':{ bg:'#FDF2F8', color:'#DB2777', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>' },
+};
+function getCatCfg(name){ return CAT_CONFIG[name] || { bg:'#F3F4F6', color:'#6B7280', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="3" width="15" height="13"/><polygon points="16,8 20,8 23,11 23,16 16,16 16,8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>' };
+}
 
 (function countdown(){
   const end=new Date();end.setHours(23,59,59,0);
@@ -391,17 +405,21 @@ async function init(){
 function renderNavCats(){
   const nav=document.getElementById('nav-inner');
   nav.innerHTML=`<div class="nav-item active" onclick="selectCat('ທັງໝົດ',this)">🏠 ທັງໝົດ</div>`
-    +categories.map(c=>`<div class="nav-item" onclick="selectCat('${c.name}',this)">${CAT_EMOJIS[c.name]||'📦'} ${c.name}</div>`).join('');
+    +categories.map(c=>`<div class="nav-item" onclick="selectCat('${c.name}',this)">${c.name}</div>`).join('');
 }
 
 function renderCatGrid(){
   const g=document.getElementById('cat-grid');
-  const all=[{name:'ທັງໝົດ',emoji:'🏠'},...categories.map(c=>({name:c.name,emoji:CAT_EMOJIS[c.name]||'📦'}))];
-  g.innerHTML=all.map((c,i)=>`
-    <div class="cat-item" onclick="selectCat('${c.name}')">
-      <div class="cat-icon" style="background:${CAT_COLORS[i%CAT_COLORS.length]}22">${c.emoji}</div>
+  const all=[{name:'ທັງໝົດ'},...categories.map(c=>({name:c.name}))];
+  g.innerHTML=all.map(c=>{
+    const cfg=getCatCfg(c.name);
+    return `<div class="cat-item" onclick="selectCat('${c.name}')">
+      <div class="cat-icon" style="background:${cfg.bg};color:${cfg.color};border:1.5px solid ${cfg.color}22">
+        <div style="width:26px;height:26px;color:${cfg.color}">${cfg.icon}</div>
+      </div>
       <div class="cat-name">${c.name}</div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 function selectCat(name,el){
