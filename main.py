@@ -2,20 +2,44 @@ import os
 import uuid
 import random
 import string
+import hashlib
+import secrets
 from datetime import datetime
 from typing import Optional, List
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException, UploadFile, File, Form, Query
+from fastapi import FastAPI, HTTPException, UploadFile, File, Form, Query, Header
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, EmailStr
 
 from database import get_db, init_db, close_pool
 from models import (
     CategoryCreate, ProductCreate, ProductUpdate,
     OrderCreate, OrderStatusUpdate, ShopSettingsUpdate, StockAdjust
 )
+
+def hash_password(password: str) -> str:
+    return hashlib.sha256(password.encode()).hexdigest()
+
+def gen_token() -> str:
+    return secrets.token_hex(32)
+
+class UserRegister(BaseModel):
+    name: str
+    phone: str
+    email: Optional[str] = None
+    password: str
+
+class UserLogin(BaseModel):
+    phone: str
+    password: str
+
+class UserUpdate(BaseModel):
+    name: Optional[str] = None
+    email: Optional[str] = None
+    address: Optional[str] = None
 
 BASE_DIR = Path(__file__).parent
 UPLOAD_DIR = BASE_DIR / "uploads"
@@ -209,9 +233,14 @@ async def delete_product(product_id: int):
 
 @app.post("/api/products/{product_id}/image")
 async def upload_product_image(product_id: int, file: UploadFile = File(...)):
-    ext = Path(file.filename).suffix.lower()
-    if ext not in [".jpg", ".jpeg", ".png", ".webp"]:
-        raise HTTPException(400, "ຮອງຮັບແຕ່ .jpg, .png, .webp")
+    ext = Path(file.filename).suffix.lower() if file.filename else ""
+    # ຖ້ຳບໍ່ມີ extension ໃຫ້ກວດ content_type
+    if not ext and file.content_type:
+        ct_map = {"image/jpeg":".jpg","image/png":".png","image/webp":".webp",
+                  "image/gif":".gif","image/heic":".jpg","image/bmp":".jpg"}
+        ext = ct_map.get(file.content_type, ".jpg")
+    if ext not in [".jpg",".jpeg",".png",".webp",".gif",".bmp",".heic",".heif"]:
+        raise HTTPException(400, f"ຮອງຮັບ .jpg .png .webp .gif (ໄດ້ຮັບ: {ext or 'unknown'})")
     filename = f"product_{product_id}_{uuid.uuid4().hex[:8]}{ext}"
     filepath = UPLOAD_DIR / filename
     content = await file.read()
@@ -362,6 +391,82 @@ async def upload_slip(order_id: int, file: UploadFile = File(...)):
             f"/uploads/{filename}", order_id
         )
     return {"slip_image_path": f"/uploads/{filename}"}
+
+
+
+# =================== USERS / AUTH ===================
+
+@app.post("/api/auth/register", status_code=201)
+async def register(data: UserRegister):
+    async with get_db() as db:
+        exists = await db.fetchrow("SELECT id FROM users WHERE phone=$1", data.phone)
+        if exists:
+            raise HTTPException(400, "ເບີໂທນີ້ລົງທະບຽນແລ້ວ")
+        hashed = hash_password(data.password)
+        token = gen_token()
+        user = await db.fetchrow("""
+            INSERT INTO users (name, phone, email, password_hash, token)
+            VALUES ($1,$2,$3,$4,$5) RETURNING id, name, phone, email, address, created_at
+        """, data.name, data.phone, data.email, hashed, token)
+        return {"token": token, "user": dict(user)}
+
+@app.post("/api/auth/login")
+async def login(data: UserLogin):
+    async with get_db() as db:
+        user = await db.fetchrow(
+            "SELECT * FROM users WHERE phone=$1", data.phone)
+        if not user:
+            raise HTTPException(401, "ບໍ່ພົບບັນຊີ — ກາລຸນາລົງທະບຽນກ່ອນ")
+        if user["password_hash"] != hash_password(data.password):
+            raise HTTPException(401, "ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ")
+        token = gen_token()
+        await db.execute("UPDATE users SET token=$1 WHERE id=$2", token, user["id"])
+        return {"token": token, "user": {
+            "id": user["id"], "name": user["name"],
+            "phone": user["phone"], "email": user["email"],
+            "address": user["address"]
+        }}
+
+@app.get("/api/auth/me")
+async def get_me(authorization: Optional[str] = Header(None)):
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(401, "ກາລຸນາ Login ກ່ອນ")
+    token = authorization.split(" ")[1]
+    async with get_db() as db:
+        user = await db.fetchrow(
+            "SELECT id,name,phone,email,address,created_at FROM users WHERE token=$1", token)
+        if not user:
+            raise HTTPException(401, "Session ໝົດອາຍຸ — ກາລຸນາ Login ຄືນ")
+        orders = await db.fetchval("SELECT COUNT(*) FROM orders WHERE customer_phone=$1", user["phone"])
+        return {**dict(user), "total_orders": orders}
+
+@app.put("/api/auth/me")
+async def update_me(data: UserUpdate, authorization: Optional[str] = Header(None)):
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(401, "ກາລຸນາ Login ກ່ອນ")
+    token = authorization.split(" ")[1]
+    async with get_db() as db:
+        user = await db.fetchrow("SELECT id FROM users WHERE token=$1", token)
+        if not user:
+            raise HTTPException(401, "Session ໝົດອາຍຸ")
+        await db.execute("""
+            UPDATE users SET
+                name=COALESCE($1,name),
+                email=COALESCE($2,email),
+                address=COALESCE($3,address)
+            WHERE id=$4
+        """, data.name, data.email, data.address, user["id"])
+        updated = await db.fetchrow(
+            "SELECT id,name,phone,email,address FROM users WHERE id=$1", user["id"])
+        return dict(updated)
+
+@app.post("/api/auth/logout")
+async def logout(authorization: Optional[str] = Header(None)):
+    if authorization and authorization.startswith("Bearer "):
+        token = authorization.split(" ")[1]
+        async with get_db() as db:
+            await db.execute("UPDATE users SET token=NULL WHERE token=$1", token)
+    return {"ok": True}
 
 
 # =================== DASHBOARD STATS ===================

@@ -201,6 +201,47 @@ footer strong{color:#fff}
 
 @media(max-width:1024px){.product-grid{grid-template-columns:repeat(3,1fr)}.cat-grid{grid-template-columns:repeat(4,1fr)}.banner-section{grid-template-columns:1fr}.banner-side{flex-direction:row}.promo-strip{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:640px){.product-grid{grid-template-columns:repeat(2,1fr)}.cat-grid{grid-template-columns:repeat(4,1fr)}.cart-drawer{width:100%}.banner-main{min-height:180px;padding:20px}.banner-title{font-size:22px}.header-inner{gap:8px}}
+
+  /* ===== AUTH MODAL ===== */
+  .auth-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+  .auth-modal-bg.show{display:flex}
+  .auth-modal{background:#fff;border-radius:16px;width:100%;max-width:420px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25);animation:authIn .3s ease}
+  @keyframes authIn{from{opacity:0;transform:scale(.95) translateY(16px)}to{opacity:1;transform:scale(1) translateY(0)}}
+  .auth-head{background:linear-gradient(135deg,var(--primary),var(--primary-dark));padding:24px;text-align:center;color:#fff}
+  .auth-head h2{font-size:20px;font-weight:700;margin-bottom:4px;font-family:'Outfit',sans-serif}
+  .auth-head p{font-size:13px;opacity:.85}
+  .auth-tabs{display:flex;border-bottom:1px solid var(--border)}
+  .auth-tab{flex:1;padding:12px;text-align:center;font-size:14px;font-weight:600;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;transition:.15s}
+  .auth-tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+  .auth-body{padding:24px}
+  .auth-form{display:none}.auth-form.active{display:block}
+  .auth-field{margin-bottom:14px}
+  .auth-field label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
+  .auth-field input{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;transition:.2s;background:#fafafa}
+  .auth-field input:focus{outline:none;border-color:var(--primary);background:#fff;box-shadow:0 0 0 3px rgba(245,57,10,.1)}
+  .auth-btn{width:100%;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s;margin-top:4px}
+  .auth-btn:hover{background:var(--primary-dark)}
+  .auth-err{background:#FFF0ED;color:var(--primary);font-size:13px;padding:8px 12px;border-radius:8px;margin-bottom:12px;display:none;border:1px solid rgba(245,57,10,.2)}
+  .auth-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.2);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+  /* Profile Modal */
+  .profile-modal{background:#fff;border-radius:16px;width:100%;max-width:420px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25);animation:authIn .3s ease}
+  .profile-head{background:linear-gradient(135deg,var(--primary),var(--primary-dark));padding:30px 24px;text-align:center;color:#fff;position:relative}
+  .profile-avatar{width:70px;height:70px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 12px;border:3px solid rgba(255,255,255,.4)}
+  .profile-name{font-size:18px;font-weight:700;font-family:'Outfit',sans-serif}
+  .profile-phone{font-size:13px;opacity:.85;margin-top:2px}
+  .profile-body{padding:20px 24px}
+  .profile-stat{display:flex;justify-content:center;gap:30px;background:var(--primary-light);border-radius:10px;padding:14px;margin-bottom:16px}
+  .profile-stat-item{text-align:center}
+  .profile-stat-num{font-size:22px;font-weight:700;color:var(--primary);font-family:'Outfit',sans-serif}
+  .profile-stat-label{font-size:11px;color:var(--muted)}
+  .profile-field{margin-bottom:12px}
+  .profile-field label{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+  .profile-field input,.profile-field textarea{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;transition:.2s}
+  .profile-field input:focus,.profile-field textarea:focus{outline:none;border-color:var(--primary)}
+  .profile-actions{display:flex;gap:10px;margin-top:4px}
+  .profile-save{flex:1;padding:10px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
+  .profile-logout{padding:10px 16px;background:#fff;color:var(--muted);border:1.5px solid var(--border);border-radius:8px;font-size:14px;cursor:pointer;font-family:inherit;transition:.15s}
+  .profile-logout:hover{border-color:#e53e3e;color:#e53e3e}
 </style>
 </head>
 <body>
@@ -222,9 +263,9 @@ footer strong{color:#fff}
         <span class="h-btn-label">ກະຕ່າ</span>
         <span class="cart-badge" id="cart-count">0</span>
       </button>
-      <button class="h-btn">
-        <span class="h-btn-icon">👤</span>
-        <span class="h-btn-label">ບັນຊີ</span>
+      <button class="h-btn" id="user-btn" onclick="openAuthModal()">
+        <span class="h-btn-icon" id="user-icon">👤</span>
+        <span class="h-btn-label" id="user-label">ບັນຊີ</span>
       </button>
     </div>
   </div>
@@ -481,7 +522,7 @@ function updateCount(){
   document.getElementById('cart-count').textContent=t;
   document.getElementById('cart-count-d').textContent=t;
 }
-function openCart(){document.getElementById('cart-drawer').classList.add('open');document.getElementById('overlay').classList.add('show');renderCart();}
+function openCart(){document.getElementById('cart-drawer').classList.add('open');document.getElementById('overlay').classList.add('show');renderCart();prefillFromProfile();}
 function closeCart(){document.getElementById('cart-drawer').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
 
 function renderCart(){
@@ -576,6 +617,155 @@ async function confirmPay(orderId){
 }
 
 function closeModal(){document.getElementById('pay-modal').classList.remove('show');window._slip=null;}
+
+// ===== AUTH =====
+let currentUser = null;
+
+function loadUserFromStorage(){
+  const token = localStorage.getItem('shop_token');
+  const user = localStorage.getItem('shop_user');
+  if(token && user){
+    try{ currentUser = JSON.parse(user); updateUserUI(); }catch(e){}
+  }
+}
+
+function updateUserUI(){
+  const icon = document.getElementById('user-icon');
+  const label = document.getElementById('user-label');
+  if(currentUser){
+    icon.textContent = '😊';
+    label.textContent = currentUser.name.split(' ')[0];
+  } else {
+    icon.textContent = '👤';
+    label.textContent = 'ບັນຊີ';
+  }
+}
+
+function openAuthModal(){
+  if(currentUser){ openProfileModal(); return; }
+  document.getElementById('auth-modal').classList.add('show');
+}
+function closeAuthModal(){ document.getElementById('auth-modal').classList.remove('show'); }
+
+function switchAuthTab(tab){
+  document.querySelectorAll('.auth-tab').forEach((t,i)=>t.classList.toggle('active',['login','register'][i]===tab));
+  document.getElementById('form-login').classList.toggle('active', tab==='login');
+  document.getElementById('form-register').classList.toggle('active', tab==='register');
+}
+
+async function doLogin(){
+  const phone = document.getElementById('l-phone').value.trim();
+  const pass  = document.getElementById('l-pass').value;
+  const err   = document.getElementById('login-err');
+  if(!phone||!pass){ err.textContent='⚠ ກາລຸນາໃສ່ຂໍ້ມູນ'; err.style.display='block'; return; }
+  try{
+    const r = await fetch(`${API}/api/auth/login`,{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({phone, password: pass})
+    });
+    const d = await r.json();
+    if(!r.ok){ err.textContent='❌ '+d.detail; err.style.display='block'; return; }
+    localStorage.setItem('shop_token', d.token);
+    localStorage.setItem('shop_user', JSON.stringify(d.user));
+    currentUser = d.user;
+    updateUserUI();
+    closeAuthModal();
+    toast(`✓ ຍິນດີຕ້ອນຮັບ ${d.user.name}!`);
+  }catch(e){ err.textContent='❌ ເກີດຂໍ້ຜິດພາດ'; err.style.display='block'; }
+}
+
+async function doRegister(){
+  const name  = document.getElementById('r-name').value.trim();
+  const phone = document.getElementById('r-phone').value.trim();
+  const email = document.getElementById('r-email').value.trim();
+  const pass  = document.getElementById('r-pass').value;
+  const err   = document.getElementById('reg-err');
+  if(!name||!phone||!pass){ err.textContent='⚠ ກາລຸນາໃສ່ຂໍ້ມູນທີ່ຈຳເປັນ'; err.style.display='block'; return; }
+  if(pass.length<6){ err.textContent='⚠ ລະຫັດຜ່ານຕ້ອງຢ່າງໜ້ອຍ 6 ຕົວ'; err.style.display='block'; return; }
+  try{
+    const r = await fetch(`${API}/api/auth/register`,{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({name, phone, email: email||null, password: pass})
+    });
+    const d = await r.json();
+    if(!r.ok){ err.textContent='❌ '+d.detail; err.style.display='block'; return; }
+    localStorage.setItem('shop_token', d.token);
+    localStorage.setItem('shop_user', JSON.stringify(d.user));
+    currentUser = d.user;
+    updateUserUI();
+    closeAuthModal();
+    toast(`🎉 ລົງທະບຽນສຳເລັດ! ຍິນດີຕ້ອນຮັບ ${d.user.name}`);
+  }catch(e){ err.textContent='❌ ເກີດຂໍ້ຜິດພາດ'; err.style.display='block'; }
+}
+
+async function doLogout(){
+  const token = localStorage.getItem('shop_token');
+  if(token) await fetch(`${API}/api/auth/logout`,{method:'POST',headers:{'Authorization':'Bearer '+token}});
+  localStorage.removeItem('shop_token');
+  localStorage.removeItem('shop_user');
+  currentUser = null;
+  updateUserUI();
+  closeProfileModal();
+  toast('ອອກຈາກລະບົບແລ້ວ');
+}
+
+async function openProfileModal(){
+  const token = localStorage.getItem('shop_token');
+  if(!token){ openAuthModal(); return; }
+  try{
+    const r = await fetch(`${API}/api/auth/me`,{headers:{'Authorization':'Bearer '+token}});
+    if(!r.ok){ doLogout(); return; }
+    const u = await r.json();
+    currentUser = u;
+    localStorage.setItem('shop_user', JSON.stringify(u));
+    document.getElementById('profile-avatar').textContent = u.name.charAt(0).toUpperCase();
+    document.getElementById('profile-name').textContent = u.name;
+    document.getElementById('profile-phone').textContent = u.phone;
+    document.getElementById('profile-orders').textContent = u.total_orders||0;
+    document.getElementById('p-name').value = u.name||'';
+    document.getElementById('p-email').value = u.email||'';
+    document.getElementById('p-address').value = u.address||'';
+    document.getElementById('profile-modal').classList.add('show');
+  }catch(e){ toast('❌ ໂຫລດຂໍ້ມູນບໍ່ສຳເລັດ',false); }
+}
+
+function closeProfileModal(){ document.getElementById('profile-modal').classList.remove('show'); }
+
+async function saveProfile(){
+  const token = localStorage.getItem('shop_token');
+  const data = {
+    name: document.getElementById('p-name').value.trim()||null,
+    email: document.getElementById('p-email').value.trim()||null,
+    address: document.getElementById('p-address').value.trim()||null,
+  };
+  try{
+    const r = await fetch(`${API}/api/auth/me`,{
+      method:'PUT', headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body: JSON.stringify(data)
+    });
+    const u = await r.json();
+    if(!r.ok){ toast('❌ ບໍ່ສຳເລັດ',false); return; }
+    currentUser = {...currentUser, ...u};
+    localStorage.setItem('shop_user', JSON.stringify(currentUser));
+    updateUserUI();
+    document.getElementById('profile-name').textContent = u.name;
+    closeProfileModal();
+    toast('✓ ບັນທຶກຂໍ້ມູນສຳເລັດ');
+  }catch(e){ toast('❌ ເກີດຂໍ້ຜິດພາດ',false); }
+}
+
+// Pre-fill customer name from profile
+function prefillFromProfile(){
+  if(currentUser){
+    const n = document.getElementById('cust-name');
+    const p = document.getElementById('cust-phone');
+    const a = document.getElementById('cust-address');
+    if(n && !n.value) n.value = currentUser.name||'';
+    if(p && !p.value) p.value = currentUser.phone||'';
+    if(a && !a.value) a.value = currentUser.address||'';
+  }
+}
+
 // ===== SLIDER =====
 let slideIdx = 0;
 const TOTAL_SLIDES = 4;
@@ -605,6 +795,7 @@ document.getElementById('slider-wrap').addEventListener('mouseleave', () => {
   }, {passive:true});
 })();
 
+loadUserFromStorage();
 init();
 </script>
 </body>
